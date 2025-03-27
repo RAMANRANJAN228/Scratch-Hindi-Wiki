@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RECORDS OF WIKI (Scratch)</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1e1e1e;
+            color: #dcdcdc;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            background: #252526;
+            padding: 20px;
+            border-radius: 10px;
+            width: 50%;
+            margin: auto;
+        }
+        input, button, textarea {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            border: none;
+            background: #333;
+            color: #dcdcdc;
+        }
+        button {
+            background: #007acc;
+            cursor: pointer;
+        }
+        .hidden {
+            display: none;
+        }
+        textarea {
+            width: 90%;
+            height: 100px;
+        }
+        .records-container {
+            text-align: left;
+            margin-top: 20px;
+            background: #252526;
+            padding: 10px;
+            border-radius: 5px;
+            width: 40%;
+            display: inline-block;
+            vertical-align: top;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #333;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>RECORDS OF WIKI (Scratch)</h1>
+    <div class="container" id="loginContainer">
+        <h2>Enter Your Username</h2>
+        <input type="text" id="username" placeholder="Username">
+        <button onclick="login()">Login</button>
+    </div>
+    <div class="container hidden" id="wikiContainer">
+        <h2>Welcome, <span id="userDisplay"></span></h2>
+        <textarea id="record" placeholder="Write here..."></textarea><br>
+        <button onclick="saveRecord()">Save Record</button>
+        <div id="historyContainer" class="hidden">
+            <h3>Edit History</h3>
+            <ul id="historyList"></ul>
+        </div>
+        <div class="records-container">
+            <h3>Saved Records</h3>
+            <ul id="savedRecords"></ul>
+        </div>
+    </div>
+    <script>
+        let history = JSON.parse(localStorage.getItem("editHistory")) || [];
+        let records = JSON.parse(localStorage.getItem("savedRecords")) || [];
+        let currentUser = "";
+        
+        function login() {
+            let username = document.getElementById("username").value.trim();
+            if (username) {
+                currentUser = username;
+                document.getElementById("loginContainer").classList.add("hidden");
+                document.getElementById("wikiContainer").classList.remove("hidden");
+                document.getElementById("userDisplay").innerText = username;
+                
+                if (username === "RAMANRANJAN2282" || username === "Raman") {
+                    document.getElementById("historyContainer").classList.remove("hidden");
+                    loadHistory();
+                }
+                loadRecords();
+            }
+        }
+        
+        function saveRecord() {
+            let text = document.getElementById("record").value;
+            if (text.trim() === "") return;
+            
+            let entry = `${currentUser}: ${text}`;
+            history.push(entry);
+            records.push(entry);
+            localStorage.setItem("editHistory", JSON.stringify(history));
+            localStorage.setItem("savedRecords", JSON.stringify(records));
+            
+            if (currentUser === "RAMANRANJAN2282" || currentUser === "Raman") {
+                loadHistory();
+            }
+            loadRecords();
+            alert("Record saved!");
+        }
+        
+        function loadHistory() {
+            let historyList = document.getElementById("historyList");
+            historyList.innerHTML = "";
+            history.forEach(entry => {
+                let li = document.createElement("li");
+                li.textContent = entry;
+                historyList.appendChild(li);
+            });
+        }
+
+        function loadRecords() {
+            let savedRecordsList = document.getElementById("savedRecords");
+            savedRecordsList.innerHTML = "";
+            records.forEach(entry => {
+                let li = document.createElement("li");
+                li.textContent = entry;
+                savedRecordsList.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
